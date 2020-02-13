@@ -88,15 +88,16 @@ class P01contactForm
     {
         $param_pattern = '`\s*([^ ,"=!]+)';     // type
         $param_pattern.= '\s*(!)?';             // required!
+        $param_pattern.= '\s*([{][a-z\-]+[}])?';// css class
         $param_pattern.= '\s*(?:"([^"]*)")?';   // "title"
         $param_pattern.= '\s*(?:\(([^"]*)\))?'; // (description)
         $param_pattern.= '\s*(?:(=[><]?)?';     // =value, =>locked, =<placeholder
         $param_pattern.= '\s*(.*))?\s*`';       // value
 
         preg_match($param_pattern, $param, $param);
-        list(, $type, $required, $title, $desc, $assign, $values) = $param;
+        list(, $type, $required, $class, $title, $desc, $assign, $values) = $param;
 
-        $field = new P01contactField($this, $id, $type);
+        $field = new P01contactField($this, $id, $type, $class);
 
         // values
         switch ($type) {
@@ -287,7 +288,7 @@ class P01contactForm
             }
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
             $html .= '<input name="p01-contact_form[token]" type="hidden" value="' . $this->getToken() . '" />';
-            $html .= '<input class="submit" type="submit" value="' . $this->lang('send') . '" /></div>';
+            $html .= '<input class="submit btn btn-lg btn-primary" type="submit" value="' . $this->lang('send') . '" /></div>';
         }
         $html .= '</form>';
 
