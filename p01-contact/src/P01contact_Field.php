@@ -14,6 +14,7 @@ class P01contactField
 
     public $id;
     public $type;
+    public $css_class;
     public $title;
     public $description;
     public $value;
@@ -28,11 +29,12 @@ class P01contactField
      * @param int $id the field id
      * @param string $type the field type
      */
-    public function __construct($form, $id, $type)
+    public function __construct($form, $id, $type, $css_class)
     {
         $this->form = $form;
         $this->id = $id;
         $this->type = $type;
+        $this->css_class = trim($css_class, '{}');
     }
 
     /**
@@ -194,6 +196,7 @@ class P01contactField
     {
         $id  = 'p01-contact' . $this->form->getId() . '_field' . $this->id;
         $name = 'p01-contact_fields[' . $this->id . ']';
+        $css_class = $this->css_class;
         $type = $this->getGeneralType();
         $orig = $type != $this->type ? $this->type : '';
         $value = $this->value;
@@ -203,15 +206,16 @@ class P01contactField
 
         $is_single_option = is_array($this->value) && count($this->value) == 1;
         if ($is_single_option) {
-            $html  = "<div class=\"field inline $type $orig $required\">";
+            $html  = "<div class=\"field form-group inline $type $orig $required\">";
         } else {
-            $html  = "<div class=\"field $type $orig $required\">";
+            $html  = "<div class=\"field form-group $type $orig $required\">";
             $html .= $this->htmlLabel($id);
         }
 
         switch ($type) {
             case 'textarea':
                 $html .= '<textarea id="' . $id . '" rows="10" ';
+                $html .= 'class="' . $css_class . '" ';
                 $html .= 'name="' . $name . '"' . $disabled.$required.$placeholder;
                 $html .= '>' . $value . '</textarea>';
                 break;
@@ -241,7 +245,7 @@ class P01contactField
                 $html .= '</div>';
                 break;
             case 'select':
-                $html .= "<select id=\"$id\" name=\"$name\"$disabled$required>";
+                $html .= "<select id=\"$id\" class=\"$class\" name=\"$name\"$disabled$required>";
                 foreach ($this->value as $i => $v) {
                     $value = !empty($v) ? $v : 'Default';
                     $selected = $this->isSelected($i) ? ' selected="selected"' : '';
@@ -252,6 +256,7 @@ class P01contactField
                 break;
             default:
                 $html .= '<input id="' . $id . '" ';
+                $html .= 'class="' . $css_class . '" ';
                 $html .= 'name="' . $name . '" type="'.$type.'" ';
                 $html .= 'value="' . $value . '"' . $disabled.$required.$placeholder . ' />';
                 break;
